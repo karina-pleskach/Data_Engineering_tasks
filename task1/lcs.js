@@ -1,9 +1,8 @@
-a=process.argv.slice(2);
-x=a[0]||'';
+[,,x='',...a]=process.argv;
 r='';
 e=l=x.length;
 for(;l>0&r=='';l--){
-    for(y=0;y<e&y+l<=e;y++){
+    for(y=0;y<=e-l;y++){
         s=x.substr(y,l);
         if(a.every(t=>t.includes(s))){
             r=s;break;
