@@ -2,3 +2,6 @@ task2/local_config.py
 task2/__pycache__/
 task3/local_config.py
 task3/__pycache__/
+gen_users/data.csv
+gen_users/local_config.py
+gen_users/__pycache__/
