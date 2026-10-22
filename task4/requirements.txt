@@ -2,3 +2,4 @@ pandas
 PyYAML
 pyarrow
 matplotlib
+streamlit

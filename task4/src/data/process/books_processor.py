@@ -5,4 +5,4 @@ def normalize_authors(df):
 
 def process(df):
     normalize_authors(df)
-    df["year"] = df["year"].astype("Int64")
+    df["year"] = pd.to_numeric(df["year"]).astype("Int64")
