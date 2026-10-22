@@ -28,3 +28,10 @@ def process(df):
     df["paid_price"] = df["quantity"] * df["unit_price"]
     df["timestamp"] = df["timestamp"].map(convert_datetime)
     df["date"] = df["timestamp"].dt.date
+
+def add_customer_ids(data):
+    data["orders"] = data["orders"].merge(
+        data["users"][["id", "customer_id"]].rename(columns={"id": "user_id"}),
+        on="user_id",
+        how="left"
+    )
