@@ -11,7 +11,5 @@ books_df = data["books"]
 users_df = data["users"]
 orders_df = data["orders"]
 
-# question = "which customer spends the most money and what are there user_ids list?"
-# print(ask_ai(question, data))
-
-print(list(books_df['genre'].unique()))
+question = "select users with e-mails started with s or p"
+print(ask_ai(question, data))
