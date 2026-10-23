@@ -3,3 +3,5 @@ PyYAML
 pyarrow
 matplotlib
 streamlit
+python-dotenv
+openai

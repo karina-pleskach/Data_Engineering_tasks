@@ -15,4 +15,4 @@ def show_dashboard():
     for store_num, tab in enumerate(tabs, start=1):
         with tab:
             data = load_store_data(store_num)
-            show_store_view(data)
+            show_store_view(data, store_num)
