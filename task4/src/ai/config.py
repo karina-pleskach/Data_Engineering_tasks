@@ -12,14 +12,14 @@ books:
 - id
 - title
 - author: Comma-separated author names. Never use for author queries. Use author_set instead.
-- author_set: Author set. Treat each unique author set as a single author for query purposes. If the user asks to find or count an author, interpret this as finding or counting a unique author set. Do not split the set into individual authors.
+- author_set: Author set. Treat each unique author set as a single author for query purposes. If the user asks to find or count an author, interpret this as finding or counting a unique author set.
 - number_of_authors
-- genre: Genre. List of unique genres in the table : ['Western', 'Textbook', 'Biography/Autobiography', 'Narrative nonfiction', 'Tall tale', 'Fantasy', 'Fairy tale', 'Short story', 'Mythopoeia', 'Legend', 'Fanfiction', 'Horror', 'Humor', 'Fiction narrative', 'Crime/Detective', 'Classic', 'Realistic fiction', 'Mythology', 'Folklore', 'Speech', 'Essay', 'Comic/Graphic Novel', 'Mystery', 'Science fiction', 'Historical fiction', 'Suspense/Thriller', 'Metafiction', 'Fiction in verse', 'Fable', 'Reference book']    - publisher: Publisher of the book
+- genre: List of unique genres : ['Western', 'Textbook', 'Biography/Autobiography', 'Narrative nonfiction', 'Tall tale', 'Fantasy', 'Fairy tale', 'Short story', 'Mythopoeia', 'Legend', 'Fanfiction', 'Horror', 'Humor', 'Fiction narrative', 'Crime/Detective', 'Classic', 'Realistic fiction', 'Mythology', 'Folklore', 'Speech', 'Essay', 'Comic/Graphic Novel', 'Mystery', 'Science fiction', 'Historical fiction', 'Suspense/Thriller', 'Metafiction', 'Fiction in verse', 'Fable', 'Reference book']
 - publisher
 - year
 
 users: A customer may have multiple user IDs because this table preserves the history of changes to customer accounts.
-- id: Account record ID, not a unique customer ID.
+- id: unique account record ID, not a unique customer ID.
 - name
 - address
 - phone
@@ -29,13 +29,13 @@ users: A customer may have multiple user IDs because this table preserves the hi
 orders:
 - id
 - user_id: Identifier of the user account associated with the order. Multiple user IDs may belong to the same customer.
-- book_id: Book ID.
-- quantity: Copies purchased.
-- unit_price: Price per copy.
-- timestamp: Order timestamp.
+- book_id
+- quantity
+- unit_price
+- timestamp
 - shipping: Shipping address.
 - paid_price: Total amount paid.
-- date: Order date.
+- date
 - customer_id: Unique customer ID.
 
 Rules:
@@ -51,90 +51,75 @@ QUERY_TOOL = {
     "function": {
         "name": "query",
         "description": """
-            Execute a query against store data using the Python query() function.
-            You MUST follow the exact schema below.
-            Do not invent parameters or use alternative key names.
-            The argvs has these fields:
-            1. from: required string. Name of the initial table.
-            Use only available tables.
-            2. joins: optional array. Each item:
-            {
-                "table": "table_name",
-                "left_on": "column_in_current_dataframe",
-                "right_on": "column_in_joined_table",
-                "how": "inner" | "left" | "right" | "outer"
-            }
-            Each join is applied sequentially.
-            In case when both table have the same named colums, to the right one _table_name suffix will be added. 
-            Be aware of it for future references.
-            3. where: optional filter expression.
-            A single condition:
-            {
-                "column": "column_name",
-                "operator": "eq" | "ne" | "gt" | "lt" |
-                            "gte" | "lte" | "in" |
-                            "contains" | "starts_with" | "regex" |
-                            "ends_with" | "is_null" | "is_not_null",
-                "value": "comparison value"
-            }
-            The value field is omitted for is_null and is_not_null.
-            For in, value must be an array.
-            For literal string matching, use contains, starts_with or ends_with.
-            For regex patterns, use regex.
-            For equality, use eq, NEVER "=" or "==".
-            For inequality, use ne.
-            For greater than, use gt.
-            For less than, use lt.
-            For greater than or equal, use gte.
-            For less than or equal, use lte.
-            Multiple conditions:
-            {
-                "logic": "and" | "or",
-                "conditions": [condition, condition]
-            }
-            Conditions may contain nested groups.
-            4. group_by: optional string or array of column names.
-            Use this to group rows before aggregation.
-            5. aggregations: optional array. Each item:
-            {
-                "column": "column_name",
-                "function": "sum" | "mean" | "min" | "max" |
-                            "count" | "nunique" | "first" | "last",
-                "as": "output_column_name"
-            }
-            Every aggregation MUST include column, function, and as.
-            Every aggregation must include "as", which names the output column.
-            Use that exact output name in having and sort.
-            Do not use a separate select field.
-            6. having: optional filter expression.
-            Same structure as where. Applied after aggregation.
-            Refer to output column names when filtering aggregated results.
-            7. distinct: optional boolean or array of column names.
-            true removes duplicate rows; an array specifies columns
-            used to identify duplicates.
-            8. sort: optional array. Each item:
-            {
-                "column": "column_name",
-                "ascending": true | false
-            }
-            Use ascending=false for descending order.
-            Never use order_by or direction.
-            9. limit: optional non-negative integer.
-            Execution order: joins -> where -> group_by/aggregations -> having -> distinct -> sort -> limit.
-            Rules:
-            - Use only columns that exist in the supplied tables or are created
-            by an aggregation.
-            - Use the query engine to calculate answers. Never calculate totals
-            or counts yourself.
-            - Choose an aggregation that matches the question.
-            - For "how many books", count distinct book IDs using
-            function=nunique on column id when counting after joins.
-            - For "how many unique publishers/authors", use nunique only
-            when the target column represents one value per entity.
-            - If the question cannot be answered using the available columns
-            and supported operations, explain the limitation instead of guessing.
-            - Return a argvs that matches this schema exactly.
-            Here is an example of filled argvs:
+Execute a query against store data using the Python query() function.
+You MUST follow the exact schema below.
+Do not invent parameters or use alternative key names.
+The argvs has these fields:
+1. from: required string. Name of the initial table.
+Use only available tables.
+2. joins: optional array. Each item:
+{
+    "table": "table_name",
+    "left_on": "column_in_current_dataframe",
+    "right_on": "column_in_joined_table",
+    "how": "inner" | "left" | "right" | "outer"
+}
+Each join is applied sequentially.
+In case when both table have the same named colums, to the right one _table_name suffix will be added. 
+3. where: optional filter expression.
+A single condition:
+{
+    "column": "column_name",
+    "operator": "eq" | "ne" | "gt" | "lt" |
+        "gte" | "lte" | "in" |
+        "contains" | "starts_with" | "regex" |
+        "ends_with" | "is_null" | "is_not_null",
+    "value": "comparison value"
+}
+The value field is omitted for is_null and is_not_null.
+For in, value must be an array.
+For literal string matching, use contains, starts_with or ends_with.
+For regex patterns, use regex.
+For equality, use eq, NEVER "=" or "==".
+For inequality, use ne.
+For greater than, use gt.
+For less than, use lt.
+For greater than or equal, use gte.
+For less than or equal, use lte.
+Multiple conditions:
+{
+    "logic": "and" | "or",
+    "conditions": [condition, condition]
+}
+Conditions may contain nested groups.
+4. group_by: optional string or array of column names.
+Use this to group rows before aggregation.
+5. aggregations: optional array. Each item:
+{
+    "column": "column_name",
+    "function": "sum" | "mean" | "min" | "max" |
+        "count" | "nunique" | "first" | "last",
+    "as": "output_column_name"
+}
+Every aggregation MUST include column, function, and as.
+Every aggregation must include "as", which names the output column.
+Use that exact output name in having and sort.
+6. having: optional filter expression.
+Same structure as where. Applied after aggregation.
+Refer to output column names when filtering aggregated results.
+7. distinct: optional boolean or array of column names.
+true removes duplicate rows; an array specifies columns used to identify duplicates.
+8. sort: optional array. Each item:
+    {
+        "column": "column_name",
+        "ascending": true | false
+}
+Use ascending=false for descending order.
+9. limit: optional non-negative integer.
+10. columns: Optional list of column names to return in the final result.
+Select only columns needed to answer the user's question.
+Execution order: joins -> where -> group_by/aggregations -> having -> distinct -> sort -> limit -> columns.
+Here is an example of filled argvs:
             argvs = {
                 "from": "books",
                 "joins": [
@@ -319,6 +304,10 @@ QUERY_TOOL = {
                         },
                         "limit": {
                             "type": ["integer", "null"]
+                        },
+                        "columns": {
+                            "type": ["array", "null"],
+                            "items": {"type": "string"}
                         }
                     },
                     "required": ["from"],

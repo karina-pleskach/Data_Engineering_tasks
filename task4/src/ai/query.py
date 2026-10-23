@@ -1,5 +1,10 @@
 import pandas as pd
 
+def select_columns(df, columns):
+    if columns:
+        return df[columns]
+    return df
+
 def limit_data(df, limit):
     if limit is None:
         return df
@@ -113,4 +118,5 @@ def query(data, specification):
     df = remove_duplicates(df, specification.get("distinct"))
     df = sort_data(df, specification.get("sort", []))
     df = limit_data(df, specification.get("limit"))
+    df = select_columns(df, specification.get("columns"))
     return df

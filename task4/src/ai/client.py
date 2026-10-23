@@ -13,13 +13,11 @@ def ask_ai(question, data):
         {
             "role": "system",
             "content": (
-                "Answer questions about store data using the query function. "
+                "Answer questions about book store data using the query function. "
                 "Never invent tables, columns, or results. "
                 "Use exact names of the tables and columns. "
                 f"Available tables and columns: {cf.TABLE_DESCRIPTIONS}. "
-                "After each query result, decide whether another query is needed. "
                 "If more data is needed, call the query function again. "
-                "Then provide the final answer."
             ),
         },
         {"role": "user", "content": question},

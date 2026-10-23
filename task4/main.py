@@ -11,5 +11,5 @@ books_df = data["books"]
 users_df = data["users"]
 orders_df = data["orders"]
 
-question = "select users with e-mails started with s or p"
+question = "select e-mails started with s or p"
 print(ask_ai(question, data))
