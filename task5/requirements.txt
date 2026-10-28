@@ -1,0 +1,7 @@
+pandas
+numpy
+streamlit
+outlier-utils
+plotly
+reportlab
+matplotlib

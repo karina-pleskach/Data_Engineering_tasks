@@ -1,0 +1,1 @@
+GOOGLE_SHEETS_URL = "https://docs.google.com/spreadsheets/d/1UXRkG5GmrZUB84rw7_YEjqQNavFQwankEYWdvchhxUU/gviz/tq?tqx=out:csv&sheet=Data"
